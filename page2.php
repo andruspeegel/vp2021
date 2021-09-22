@@ -92,7 +92,7 @@
 	<hr>
 	<form method="POST">
 		<?php echo $photo_select_html; ?>
-		<input type="submit" name="photo_select_submit" value="Näita valitud fotot">
+		<input type="submit" name="photo_select_submit" value="Näita fotot">
 	</form>
 	<hr>
 	<?php 
