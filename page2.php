@@ -1,4 +1,6 @@
 <?php
+	require_once("fnc_user.php");
+	require_once("../../config.php");
 	$author_name = "Andrus Peegel";	
 	//Kontroll, kas POST info jõuab kuhugi:
 	//var_dump($_POST);
@@ -71,6 +73,11 @@
 	}
 	$photo_select_html .= "</select> \n";
 	
+	//sisselogimine
+	$notice = null;
+	if(isset($_POST["login_submit"])){
+		$notice = sign_in($_POST["email_input"], $_POST["password_input"]);
+	}	
 ?>
 <!DOCTYPE html>
 <html lang="et">
@@ -82,6 +89,13 @@
 	<h1><?php echo $author_name; ?>, veebiprogrameerimine</h1>
 	<p>See leht on loodud õppetöö raames ja ei sisalda tõsiseltvõetavat sisu.</p>
 	<p>Õppetöö toimub <a href="https://www.tlu.ee/dt">Tallinna Ülikooli Digitehnoloogiate instituudis</a>.</p>
+	<hr>
+	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+		<input type="email" name="email_input" placeholder="Kasutajatunnus ehk e-post">
+		<input type="password" name="password_input" placeholder="Parool">
+		<input type="submit" name="login_submit" value="Logi sisse">
+	</form>
+	<p> Loo omale <a href="add_user.php">kasutajakonto</a></p>
 	<hr>
 	<form method="POST">
 		<input type="text" placeholder="omadussõna tänase kohta" name="todays_adjective_input" value="<?php echo $todays_adjective; ?>">
