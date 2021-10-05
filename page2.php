@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	require_once("fnc_user.php");
 	require_once("../../config.php");
 	$author_name = "Andrus Peegel";	
@@ -73,11 +74,34 @@
 	}
 	$photo_select_html .= "</select> \n";
 	
+	$email = null;
+	$email_error = null;
+	$password_error = null;
+	$notice = null;
 	//sisselogimine
 	$notice = null;
 	if(isset($_POST["login_submit"])){
-		$notice = sign_in($_POST["email_input"], $_POST["password_input"]);
-	}	
+		if(isset($_POST["email_input"]) and !empty($_POST["email_input"])){
+			$email = filter_var($_POST["email_input"], FILTER_VALIDATE_EMAIL);
+			if(strlen($email) < 5){
+				$email_error = "Palun sisesta kasutajatunnus (e-post)!";
+			}
+		} else {
+			$email_error = "Palun sisesta kasutajatunnus (e-post)!";
+		}
+		if(isset($_POST["password_input"]) and !empty($_POST["password_input"])){
+			if(strlen($_POST["password_input"]) < 8){
+				$password_error = "Sisestatud salasõna on liiga lühike!";
+			}
+		} else {
+			$password_error = "Palun sisesta salasõna!";
+		}
+		if(empty($email_error) and empty($password_error)){
+			$notice = sign_in($email, $_POST["password_input"]);
+		} else {
+			$notice = $email_error ." " .$password_error;
+		}
+    }
 ?>
 <!DOCTYPE html>
 <html lang="et">
@@ -91,11 +115,12 @@
 	<p>Õppetöö toimub <a href="https://www.tlu.ee/dt">Tallinna Ülikooli Digitehnoloogiate instituudis</a>.</p>
 	<hr>
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-		<input type="email" name="email_input" placeholder="Kasutajatunnus ehk e-post">
+		<input type="email" name="email_input" placeholder="Kasutajatunnus ehk e-post" value="<?php echo $email; ?>">
 		<input type="password" name="password_input" placeholder="Parool">
 		<input type="submit" name="login_submit" value="Logi sisse">
+				<span><?php echo $notice; ?></span>
 	</form>
-	<p> Loo omale <a href="add_user.php">kasutajakonto</a></p>
+	<p> Loo <a href="add_user.php">kasutajakonto</a></p>
 	<hr>
 	<form method="POST">
 		<input type="text" placeholder="omadussõna tänase kohta" name="todays_adjective_input" value="<?php echo $todays_adjective; ?>">
