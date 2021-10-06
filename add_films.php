@@ -2,12 +2,12 @@
 	session_start();
 	
 	if(!isset($_SESSION["user_id"])){
-        header("Location: page.php");
-    
+        header("Location: page2.php");
+	}
 	
 	 if(isset($_GET["logout"])){
         session_destroy();
-        header("Location: page.php");
+        header("Location: page2.php");
     }
 
 
@@ -15,7 +15,7 @@
 	require_once("fnc_films.php");
 	require_once("fnc_general.php");
 	//echo $server_host;
-	$author_name = "Andrus Peegel";	
+	//$author_name = "Andrus Peegel";	
 	$film_store_notice = null;
 		$title_input = null;
 		$year_input = date("Y");
@@ -86,18 +86,19 @@
 	
 	require("page_header.php");
 ?>
+
 	<h1><?php echo $_SESSION["first_name"] ." " .$_SESSION["last_name"]; ?>, veebiprogrameerimine</h1>
 	<p>See leht on loodud õppetöö raames ja ei sisalda tõsiseltvõetavat sisu.</p>
 	<p>Õppetöö toimub <a href="https://www.tlu.ee/dt">Tallinna Ülikooli Digitehnoloogiate instituudis</a>.</p>
 	<hr>
 	<ul>
-        <li><a href="?logout=1">Logi välja</a></li>
-		<li><a href="home.php">Avaleht</a></li>
-		<li><a href="list_films.php">Filmide nimekirja vaatamine</a> versioon 1</li>
+        <p><a href="?logout=1">Logi välja</a></p>
+		<p><a href="home.php">Avaleht</a></p>
+		<p><a href="list_films.php">Filmide nimekirja vaatamine</a> versioon 1</p>
     </ul>
-	<hr>
+		<hr>
 	<h2>Eesti filmide lisamine</h2>
-		<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
         <label for="title_input">Filmi pealkiri</label>
         <input type="text" name="title_input" id="title_input" placeholder="filmi pealkiri" value="<?php echo $title_input; ?>"><span><?php echo $title_input_error; ?></span>
         <br>
@@ -124,6 +125,5 @@
         <input type="submit" name="film_submit" value="Salvesta">
     </form>
     <span><?php echo $film_store_notice; ?></span>
-	
 </body>
 </html>
