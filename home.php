@@ -20,6 +20,8 @@
 			<p><a href="list_films.php">Filmide nimekirja vaatamine</a> versioon 1</p>
 			<p><a href="add_films.php">Filmide lisamine andmebaasi</a> versioon 1</p>
 			<p><a href="user_profile.php">Kasutajaprofiil</a></p>
+			<p><a href="movie_relations.php">Filmi, isiku ja muude seoste loomine.</a></p>
+
     </ul>
 	
 </body>
