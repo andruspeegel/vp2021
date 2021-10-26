@@ -106,6 +106,50 @@
         $conn->close();
         return $notice;
     }
+	
+	function store_new_person($person_firstname, $person_surname, $person_birth_date){
+			$notice = null;
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+				$stmt = $conn->prepare("INSERT INTO person (first_name, last_name, birth_date) VALUES(?,?,?)");
+				echo $conn->error;	
+				$stmt->bind_param("sss", $person_firstname, $person_surname, $person_birth_date);
+				if($stmt->execute()){
+					$notice = "Uus isik edukalt salvestatud!";
+				} else {
+					$notice = "Uue isiku salvestamisel tekkis viga: " .$stmt->error;
+				}	
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}
+	
+	function list_movie_info(){
+		$html = null;
+        $conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+        $conn->set_charset("utf8");
+		$stmt = $conn->prepare("SELECT person.first_name, person.last_name, person.birth_date, person_in_movie.role, movie.title, movie.production_year, movie.duration FROM person JOIN person_in_movie ON person.id = person_in_movie.person_id JOIN movie ON movie.id = person_in_movie.movie_id");
+		echo $conn->error;
+		$stmt->bind_result($first_name_from_db, $last_name_from_db, $birth_date_from_db, $role_from_db, $title_from_db, $production_year_from_db, $duration_from_db);
+		$stmt->execute();
+		while($stmt->fetch()){
+			$html .= "<li>" .$first_name_from_db ." " .$last_name_from_db ." (sündinud: " .date_format_est($birth_date_from_db) ."), ";
+			if(!empty($role_from_db)){
+				$html .= "tegelane " .$role_from_db ." filmis " .$title_from_db ." (toodetud: " .$production_year_from_db .", kestus: " .min_to_hour_min($duration_from_db) .")";
+			} else {
+				$html .= $title_from_db ." (toodetud: " .$production_year_from_db .", kestus: " .min_to_hour_min($duration_from_db) .")";
+			}
+			$html .= "</li> \n";
+		}
+		if(empty($html)){
+			$html = "<p>Info puudub.</p> \n";
+		} else {
+            $html = "<ul> \n" .$html ."</ul> \n";
+        }
+		$stmt->close();
+        $conn->close();
+        return $html;
+	}
 	//---------------Vana osa -------------
 	
 	function read_all_films(){
