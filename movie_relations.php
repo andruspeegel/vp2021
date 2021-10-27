@@ -250,6 +250,7 @@
 	<br>
 	<input type="submit" name="person_movie_input" value="Salvesta">
 	</form>	
+	<hr>
 	<h3> Film, isik ja amet</h3>
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 			<label for="movie_select">Film: </label>
