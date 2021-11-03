@@ -2,6 +2,7 @@
 	session_start();
 	require_once("fnc_user.php");
 	require_once("../../config.php");
+	require_once("fnc_gallery.php");
 	$author_name = "Andrus Peegel";	
 	//Kontroll, kas POST info jõuab kuhugi:
 	//var_dump($_POST);
@@ -128,6 +129,8 @@
 		<span><?php echo $todays_adjective_error; ?></span>
 	</form>
 	<?php echo $todays_adjective_html; ?>
+	<hr>
+	<?php echo show_latest_public_photo(); ?>
 	<hr>
 	<form method="POST">
 		<?php echo $photo_select_html; ?>

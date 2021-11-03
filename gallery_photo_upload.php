@@ -17,9 +17,6 @@
 	
 	$photo_error = null;
 	$photo_upload_notice = null;
-	$photo_upload_orig_dir = "upload_photos_orig/";
-	$photo_upload_normal_dir = "upload_photos_normal/";
-	$photo_upload_thumb_dir = "upload_photos_thumb/";
 	$photo_file_name_prefix = "vp_";
 	$photo_file_size_limit = 1.2 * 1024 * 1024;
 	$photo_width_limit = 600;
@@ -87,7 +84,7 @@
 			
 			$my_new_temp_image = resize_photo($my_temp_image, $photo_width_limit, $photo_height_limit);
 			
-			add_watermark($my_new_temp_image, $watermark_file);
+			$my_new_temp_image = add_watermark($my_new_temp_image, $watermark_file);
 			
 			//salvestamine
 			$photo_upload_notice = "Vähendatud pildi " .save_image($my_new_temp_image, $file_type, $photo_upload_normal_dir .$file_name);

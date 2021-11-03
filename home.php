@@ -23,6 +23,8 @@
 			<p><a href="movie_relations.php">Filmi, isiku ja muude seoste loomine.</a></p>
 			<p><a href="movie_info.php">Filmi info</a></p>
 			<p><a href="gallery_photo_upload.php">Galeeripiltide üleslaadimine</a></p>
+			<p><a href="gallery_public.php">Sisseloginud kasutajatele nähtavate fotode galerii</a></p>
+			<p><a href="gallery_own.php">Minu fotode galerii</a></p>
 
     </ul>
 	
