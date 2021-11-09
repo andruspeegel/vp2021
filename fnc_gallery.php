@@ -132,3 +132,59 @@
 		$conn->close();
 		return $photo_html;
 	}
+	
+	function read_own_photo($photo){
+		$photo_data = [];
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+        $stmt = $conn->prepare("SELECT filename, alttext, privacy FROM vprg_photos WHERE id = ? AND userid = ? AND deleted IS NULL");
+		echo $conn->error;
+        $stmt->bind_param("ii", $photo, $_SESSION["user_id"]);
+        $stmt->bind_result($filename_from_db, $alttext_from_db, $privacy_from_db);
+		$stmt->execute();
+		if($stmt->fetch()){
+            array_push($photo_data, true);
+				array_push($photo_data, $filename_from_db);
+				array_push($photo_data, $alttext_from_db);
+				array_push($photo_data, $privacy_from_db);
+        } else {
+			array_push($photo_data, false);
+		}
+		$stmt->close();
+		$conn->close();
+		return $photo_data;
+	}
+	
+	function photo_data_update($photo, $alttext, $privacy){
+		$notice = null;
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+        $stmt = $conn->prepare("UPDATE vprg_photos SET alttext = ?, privacy = ? WHERE id = ? AND userid = ?");
+		echo $conn->error;
+        $stmt->bind_param("siii", $alttext, $privacy, $photo, $_SESSION["user_id"]);
+        if($stmt->execute()){
+			$notice = "Andmete uuendamine õnnestus!";
+		} else {
+			$notice = "Andmete uuendamisel tekkis tõrge!";
+		}
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}
+	
+	function delete_photo($photo){
+		$notice = null;
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+        $stmt = $conn->prepare("UPDATE vprg_photos SET deleted = NOW() WHERE id = ? AND userid = ?");
+		echo $conn->error;
+        $stmt->bind_param("ii", $photo, $_SESSION["user_id"]);
+        if($stmt->execute()){
+			$notice = "Korras";
+		} else {
+			$notice = "Foto kustutamisel tekkis tõrge!";
+		}
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}

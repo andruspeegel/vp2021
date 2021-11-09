@@ -12,6 +12,7 @@
 
 
 	require_once("../../config.php");
+	require_once("fnc_general.php");
 	require_once("fnc_gallery.php");
 	$privacy = 2;
 	

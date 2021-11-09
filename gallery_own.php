@@ -12,6 +12,7 @@
 
 
 	require_once("../../config.php");
+	require_once("fnc_general.php");
 	require_once("fnc_gallery.php");
 	$privacy = 2;
 	
@@ -41,7 +42,7 @@
 		<p><a href="home.php">Avaleht</a></p>
     </ul>
 		<hr>
-	<h2>Avalike fotode galerii</h2>
+	<h2>Enda fotode galerii</h2>
 	<div class="gallery">
 		<p>
 			<?php
