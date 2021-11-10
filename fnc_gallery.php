@@ -35,10 +35,10 @@
 		//$stmt = $conn->prepare("SELECT filename, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL");
 		//$stmt = $conn->prepare("SELECT filename, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC");
 		//$stmt = $conn->prepare("SELECT filename, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC LIMIT 5");
-		$stmt = $conn->prepare("SELECT filename, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC LIMIT ?, ?");
+		$stmt = $conn->prepare("SELECT filename, created, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC LIMIT ?, ?");
 		echo $conn->error;
 		$stmt->bind_param("iii", $privacy, $skip, $limit);
-		$stmt->bind_result($filename_from_db, $alttext_from_db);
+		$stmt->bind_result($filename_from_db, $created_from_db, $alttext_from_db);
 		$stmt->execute();
 		while($stmt->fetch()){
 			//<div>
@@ -53,6 +53,7 @@
 				$photo_html .= $alttext_from_db;
 			}
 			$photo_html .= '" class="thumbs">' ."\n";
+			$photo_html .= "<p>Lisatud: " .date_format_est($created_from_db) ."</p> \n";
 			$photo_html .= "</div> \n";
 		}
 		if(empty($photo_html)){

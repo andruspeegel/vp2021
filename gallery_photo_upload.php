@@ -14,6 +14,7 @@
 	require_once("../../config.php");
 	require_once("fnc_photoupload.php");
 	require_once("fnc_general.php");
+	require_once("classes/Photoupload.class.php");
 	
 	$photo_error = null;
 	$photo_upload_notice = null;
@@ -31,6 +32,7 @@
 	
 	if(isset($_POST["photo_submit"])){		
 		if(isset($_FILES["photo_input"]["tmp_name"]) and !empty($_FILES["photo_input"]["tmp_name"])){
+			//kas on pilt ja mis tüüpi?
 			$image_check = getimagesize($_FILES["photo_input"]["tmp_name"]);
 			if($image_check !== false){
 				if($image_check["mime"] == "image/jpeg"){
@@ -62,7 +64,9 @@
 		}
 		if(empty($privacy)){
 			$photo_error .= " Privaatsus on määramata!";
-		}	
+		}
+
+		$photo_upload = new Photoupload($_FILES["photo_input"], $file_type);
 		
 		if(empty($photo_error)){
 			//teeme failinime
@@ -70,43 +74,20 @@
 			$time_stamp = microtime(1) * 10000;
 			$file_name = $photo_file_name_prefix .$time_stamp ."." .$file_type;
 			
-			//muudame pildi suurust
-			//loome image objekti ehk pikslikogumi
-			if($file_type == "jpg"){
-				$my_temp_image = imagecreatefromjpeg($_FILES["photo_input"]["tmp_name"]);
-			}
-			if($file_type == "png"){
-				$my_temp_image = imagecreatefrompng($_FILES["photo_input"]["tmp_name"]);
-			}
-			if($file_type == "gif"){
-				$my_temp_image = imagecreatefromgif($_FILES["photo_input"]["tmp_name"]);
-			}
+			$photo_upload->resize_photo($photo_width_limit, $photo_height_limit);
+			$photo_upload->add_watermark($watermark_file);
+			$photo_upload_notice = "Vähendatud pildi " .$photo_upload->save_image($photo_upload_normal_dir .$file_name);
+			$photo_upload->resize_photo($thumbnail_width, $thumbnail_height);
+			$photo_upload_notice .= " Pisipildi " .$photo_upload->save_image($photo_upload_thumb_dir .$file_name);
+			$photo_upload_notice .= $photo_upload->move_orig_photo($photo_upload_orig_dir .$file_name);
 			
-			$my_new_temp_image = resize_photo($my_temp_image, $photo_width_limit, $photo_height_limit);
-			
-			$my_new_temp_image = add_watermark($my_new_temp_image, $watermark_file);
-			
-			//salvestamine
-			$photo_upload_notice = "Vähendatud pildi " .save_image($my_new_temp_image, $file_type, $photo_upload_normal_dir .$file_name);
-			//kõrvaldame pikslikogumi, et mälu vabastada
-			imagedestroy($my_new_temp_image);
-			
-			//Pisipilt
-			$my_new_temp_image = resize_photo($my_temp_image, $thumbnail_width, $thumbnail_height, false);
-			$photo_upload_notice .= " Pisipildi " .save_image($my_new_temp_image, $file_type, $photo_upload_thumb_dir .$file_name);
-			imagedestroy($my_new_temp_image);
-			
-			imagedestroy($my_temp_image);
-			
-			if(move_uploaded_file($_FILES["photo_input"]["tmp_name"], $photo_upload_orig_dir .$file_name)){
-				$photo_upload_notice .= " Originaalfoto laeti üles!";
-			} else {
-				$photo_upload_notice .= " Foto üleslaadimine ei õnnestunud!";
-			}
 			$photo_upload_notice .= " " .store_photo_data($file_name, $alt_text, $privacy);
 			$alt_text = null;
 			$privacy = 1;
 		}
+		
+		unset($photo_upload);
+		
 		} else {
 			$photo_error = "Pildifaili pole valitud.";
 		}

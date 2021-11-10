@@ -18,7 +18,7 @@
 	$photo_data = [];
 	$photo_data_update_notice = null;
 	
-	if(isset($_POST["photo_input"])){
+	if(isset($_POST["photo_data_submit"])){
 		$privacy = 1;
 		if(isset($_POST["privacy_input"])){
 			if(!empty(filter_var($_POST["privacy_input"], FILTER_VALIDATE_INT))){
