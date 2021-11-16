@@ -1,24 +1,79 @@
 <?php
 	class Photoupload{
 		private $photo_to_upload;
-		private $file_type;//esialgu saadame, hiljem teeb klass selle väärtuse ise kindlaks.
+		public $file_type;//esialgu saadame, hiljem teeb klass selle väärtuse ise kindlaks.
 		private $my_temp_image;
 		private $my_new_temp_image;
+		public $error;
+		public $file_name;
 		
-		function __construct($photo, $file_type){
+		function __construct($photo){
 			$this->photo_to_upload = $photo;
-			$this->file_type = $file_type;
-			$this->my_temp_image = $this->create_image_from_file($this->photo_to_upload["tmp_name"], $this->file_type);
+			$this->error = null;
+			$this->check_image();
+			if(empty($this->error)){
+				$this->my_temp_image = $this->create_image_from_file($this->photo_to_upload["tmp_name"], $this->file_type);
+			}
 		}
 		
 		function __destruct(){
-			if(isset($this->my_temp_image){
+			if(isset($this->my_temp_image)){
 				@imagedestroy($this->my_temp_image);
 			}
-			if(isset($this->my_new_temp_image){
+			if(isset($this->my_new_temp_image)){
 				@imagedestroy($this->my_new_temp_image);
 			}
 		}
+		
+		private function check_image(){
+			$error = null;
+            $image_check = getimagesize($this->photo_to_upload["tmp_name"]);
+            if($image_check !== false){
+                if($image_check["mime"] == "image/jpeg"){
+                    $this->file_type = "jpg";
+                }
+                if($image_check["mime"] == "image/png"){
+                    $this->file_type = "png";
+                }
+                if($image_check["mime"] == "image/gif"){
+                    $this->file_type = "gif";
+                }
+                //var_dump($image_check);
+            } else {
+				$error = "Valitud fail ei ole pilt!";
+                $this->error = $error;
+            }
+			return $error;
+        }
+		
+		public function check_size($limit){
+			$error = null;
+            if($this->photo_to_upload["size"] > $limit){
+                $error = "Valitud fail on liiga suur!";
+				$this->error = $error;
+            }
+            return $this->error;
+        }
+		
+		public function check_allowed_type($allowed_types){
+			$error = null;
+			$file_info = getimagesize($this->photo_to_upload["tmp_name"]);
+			if(isset($file_info["mime"])){
+				if(!in_array($file_info["mime"], $allowed_types)){
+					$error = "Valitud foto fail pole lubatud tüüpi!";
+					$this->error = $error;
+				}
+			} else {
+					$error = "Valitud faili tüüpi ei õnnestu kontrollida!";
+					$this->error = $error;
+				}
+			return $error;
+		}
+		
+		 public function create_filename($prefix){
+            $time_stamp = microtime(1) * 10000;
+            $this->file_name = $prefix .$time_stamp ."." .$this->file_type;
+        }
 		
 		private function create_image_from_file($photo, $file_type){
 			//loome image objekti ehk pikslikogumi
