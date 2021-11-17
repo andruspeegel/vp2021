@@ -19,7 +19,7 @@
 	$photo_error = null;
 	$photo_upload_notice = null;
 	$photo_file_name_prefix = "vp_";
-	$photo_file_size_limit = 1.2 * 1024 * 1024;
+	$photo_file_size_limit = 1024 * 1024;
 	$photo_width_limit = 600;
 	$photo_height_limit = 400;
 	$thumbnail_height = $thumbnail_width = 100;
@@ -78,7 +78,9 @@
 			$photo_upload_notice = $photo_error;
 		}
     }		
-		
+	
+	$to_head = '<script src="javascript/fileSizeCheck.js" defer></script>' ."\n";
+	
 	require("page_header.php");
 ?>
 
@@ -108,7 +110,8 @@
 		<input type="radio" name="privacy_input" id="privacy_input_3" value="3" <?php if($privacy == 3){echo " checked";}?>>
 		<label for="privacy_input_3">Avalik (kõik näevad)</label>
 		<br>
-	    <input type="submit" name="photo_submit" value="Lae pilt üles.">
+	    <input type="submit" name="photo_submit" id="photo_submit" value="Lae pilt üles.">
+		<span id="notice">Vali pilt!</span>
 	</form>
 	<span><?php echo $photo_upload_notice; ?></span>
 </body>

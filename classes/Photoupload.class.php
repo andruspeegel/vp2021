@@ -1,7 +1,7 @@
 <?php
 	class Photoupload{
 		private $photo_to_upload;
-		public $file_type;//esialgu saadame, hiljem teeb klass selle väärtuse ise kindlaks.
+		public $file_type;
 		private $my_temp_image;
 		private $my_new_temp_image;
 		public $error;
