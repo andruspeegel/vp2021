@@ -42,7 +42,8 @@ function storeRating(){
 		let webRequest = new XMLHttpRequest();
 		webRequest.onreadystatechange = function(){
 			if(this.readyState == 4 && this.status == 200){
-				document.querySelector("#avgRating").innerHTML = "Keskmine hinne: " + this.responseText;
+				document.querySelector("#avgRating").innerHTML = this.responseText;
+				document.querySelector("#rating" + photoId).innerHTML = this.responseText;
 				document.querySelector("#storeRating").removeEventListener("click", storeRating);
 			}
 		};

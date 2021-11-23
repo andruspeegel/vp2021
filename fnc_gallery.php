@@ -35,10 +35,10 @@
 		//$stmt = $conn->prepare("SELECT filename, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL");
 		//$stmt = $conn->prepare("SELECT filename, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC");
 		//$stmt = $conn->prepare("SELECT filename, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC LIMIT 5");
-		$stmt = $conn->prepare("SELECT id, filename, created, alttext FROM vprg_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC LIMIT ?, ?");
+		$stmt = $conn->prepare("SELECT vprg_photos.id, filename, alttext, firstname, lastname, vprg_photos.created, AVG(rating) as AvgValue FROM vprg_photos JOIN vprg_users ON vprg_photos.userid = vprg_users.id LEFT JOIN vprg_photoratings ON vprg_photoratings.photoid = vprg_photos.id WHERE vprg_photos.privacy >= ? AND deleted IS NULL GROUP BY vprg_photos.id DESC LIMIT ?,?");
 		echo $conn->error;
 		$stmt->bind_param("iii", $privacy, $skip, $limit);
-		$stmt->bind_result($id_from_db, $filename_from_db, $created_from_db, $alttext_from_db);
+		$stmt->bind_result($id_from_db, $filename_from_db, $alttext_from_db, $firstname_from_db, $lastname_from_db, $created_from_db, $avg_rating_from_db);
 		$stmt->execute();
 		while($stmt->fetch()){
 			//<div>
@@ -53,7 +53,15 @@
 				$photo_html .= $alttext_from_db;
 			}
 			$photo_html .= '" class="thumbs" data-id="' .$id_from_db .'" data-fn="' .$filename_from_db .'">' ."\n";
+			$photo_html .= "<p>" .$firstname_from_db ." " .$lastname_from_db ."<br> \n";
 			$photo_html .= "<p>Lisatud: " .date_format_est($created_from_db) ."</p> \n";
+			$photo_html .= '<p id="rating' .$id_from_db .'">';
+			if(!empty($avg_rating_from_db)){
+				$photo_html .= "Hinne: " .round($avg_rating_from_db, 2);
+			} else {
+				$photo_html .= "Pole hinnatud";
+			}
+			$photo_html .= "</p> \n";
 			$photo_html .= "</div> \n";
 		}
 		if(empty($photo_html)){
