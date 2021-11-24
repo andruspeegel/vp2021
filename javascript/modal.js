@@ -47,7 +47,11 @@ function storeRating(){
 				document.querySelector("#storeRating").removeEventListener("click", storeRating);
 			}
 		};
-		webRequest.open("GET", "store_photorating.php?photo=" + photoId + "&rating=" + rating, true);
+		if(rating>0){
+			webRequest.open("GET", "store_photorating.php?photo=" + photoId + "&rating=" + rating, true);
+		} else {
+			webRequest.open("GET", "store_photorating.php?photo=" + photoId, true);
+		}
 		webRequest.send();
 	}
 }

@@ -6,13 +6,13 @@
 		$privacy = 3;
 		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT filename, alttext FROM vprg_photos WHERE id = (SELECT MAX(id) FROM vprg_photos WHERE privacy = ? AND deleted IS NULL)");
+		$stmt = $conn->prepare("SELECT id, alttext FROM vprg_photos WHERE id = (SELECT MAX(id) FROM vprg_photos WHERE privacy = ? AND deleted IS NULL)");
 		echo $conn->error;
 		$stmt->bind_param("i", $privacy);
-		$stmt->bind_result($filename_from_db, $alttext_from_db);
+		$stmt->bind_result($id_from_db, $alttext_from_db);
 		$stmt->execute();
 		if($stmt->fetch()){
-			$photo_html = '<img src="' .$GLOBALS["photo_upload_normal_dir"] .$filename_from_db .'" alt="';
+			$photo_html = '<img src="show_public_photo.php?photo=' .$id_from_db .'" alt="';
 			if(empty($alttext_from_db)){
 				$photo_html .= "Üleslaetud foto";
 			} else {

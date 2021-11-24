@@ -1,14 +1,8 @@
 <?php
     //alustame sessiooni
-    session_start();
-    //kas on sisselogitud
-    if(!isset($_SESSION["user_id"])){
-        header("Location: page2.php");
-    }
-    
-	require_once("../../config.php");
-    
-    $database = "if21_and_pee";
+    require_once("classes/SessionManager.class.php");
+	SessionManager::sessionStart("vp", 0, "/~andpee/vp2021/", "greeny.cs.tlu.ee");
+
     
 	if(isset($_GET["photo"]) and !empty($_GET["photo"])){
 		$id = filter_var($_GET["photo"], FILTER_VALIDATE_INT);
@@ -21,6 +15,8 @@
     
 	
 	if(!empty($id)){
+		require_once("../../config.php");
+		$database = "if21_and_pee";
 		$conn = new mysqli($server_host, $server_user_name, $server_password, $database);
 		$conn->set_charset("utf8");
 		if(!empty($rating)){
