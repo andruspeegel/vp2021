@@ -1,6 +1,9 @@
 <?php
 	require_once("use_session.php");
 	
+	require_once("../../config.php");
+	require_once("fnc_news.php");
+	
 	//Testin classi
 	/* require_once("classes/Test.class.php");
 	$test_object = new Test(6);
@@ -39,5 +42,10 @@
 			<p><a href="gallery_own.php">Minu fotode galerii</a></p>
 			<p><a href="add_news.php">Uudiste lisamine</a></p>
     </ul>
+	<br>
+	<h2>Uudised</h2>
+	<?php 
+		echo latest_news(5);
+	?>
 </body>
 </html>
