@@ -41,6 +41,9 @@
 			<p><a href="gallery_public.php">Sisseloginud kasutajatele nähtavate fotode galerii</a></p>
 			<p><a href="gallery_own.php">Minu fotode galerii</a></p>
 			<p><a href="add_news.php">Uudiste lisamine</a></p>
+			<p><a href="peo_regis.php">Peole registreerumine</a></p>
+			<p><a href="peo_cancel.php">Peole registreerumise tühistamine</a></p>
+			<p><a href="peo_admin.php"> Peo administraatori leht</a></p>
     </ul>
 	<br>
 	<h2>Uudised</h2>
